@@ -13,17 +13,21 @@
                 <th> Title </th>
                 <th> Content </th>
                 <th> Time </th>
+                <th> Image </th>
             </tr>
         </thead>
-        {% for post in posts %}
         <tbody>
             <tr>
                 <td> {{ post.author }} </td>
                 <td> {{ post.title }}  </td>
                 <td> {{ post.content }} </td>
                 <td> {{ post.created_at }} </td>
+                {% if post.photo %}
+                    <td class="media">
+                        <img src="{{ post.photo.url }}" style="width: 75px; height: 75px;"/>
+                    </td>
+                {% endif %}
             </tr>
-            {% endfor %}
         </tbody>
     </table>
     <h1> 댓글 </h1>
@@ -38,10 +42,19 @@
             {% for ment in comment %}
             <tr>
                 <td> {{ ment.author }} </td>
-                <td> {{ ment.message }} </td>
+                <td class="media"> {% if ment.image %}
+                    <img src="{{ ment.image.url }}" style="width: 75px; height: 75px;"/>
+                    {% endif %}
+                {{ ment.message }}
+{{ ment.pk }}
+                </td>
+
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <button type="button" class="btn btn-primary">
+    <a href="{% url 'blog:comments' post.pk %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Comments</a></button>
+
 </body>
 </html>
