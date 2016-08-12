@@ -2,10 +2,10 @@ from django import forms
 from blog.models import Comment, Post, myupload_to
 from django.db import models
 
-# class CommentModelForm(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         fields = ['message', 'author' 'image']
+class CommentModelForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['message','image']
 
 class UploadFieldForm(forms.Form):
     title = forms.CharField(max_length=50)
@@ -18,6 +18,7 @@ class CommentForm(forms.Form):
     image = forms.ImageField(label="image", required=False)
     def save(self, commit, Post_pk):
         comment = Comment(message=self.cleaned_data['message'], author=self.cleaned_data['author'], image=self.cleaned_data['image'])
+        #이게 무슨 뜻인지?,
         comment.post_id = Post_pk
         if commit:
             comment.save()

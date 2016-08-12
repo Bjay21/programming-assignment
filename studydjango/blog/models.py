@@ -3,6 +3,7 @@ import os
 import uuid
 from django.db import models
 from django.core.files import File
+from django.conf import settings
 from django.db.models.signals import pre_save
 from django.forms import ValidationError
 from django.utils import timezone
@@ -16,13 +17,13 @@ def myupload_to(instance, filename):
     return os.path.join(name[:3], name[3:6], name[6:] + extension)
 
 class Post(models.Model):
-    author = models.CharField(max_length=20)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
     title = models.CharField(max_length=100,
             validators=[MinLengthValidatior(4)],
             verbose_name='제목')
     content = models.TextField(help_text='Markdown 문법을 써주세요.',
             validators=[MinLengthValidatior(10)])
-    photo = models.ImageField(upload_to = myupload_to)
+    photo = models.ImageField(upload_to = myupload_to, blank=True)
     # tags = models.CharField(max_length=100, blank=True)
     tag_set = models.ManyToManyField('Tag', blank=True)
     lnglat = models.CharField(max_length=50, validators=[lnglat_validator], help_text='경도,위도 포맷으로 입력')
@@ -47,7 +48,7 @@ pre_save.connect(on_pre_save, sender=Post)
 
 class Comment(models.Model):
     post = models.ForeignKey(Post)
-    author = models.CharField(max_length=20)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
     message = models.TextField()
     image = models.ImageField(blank=True, upload_to='image/')
 
